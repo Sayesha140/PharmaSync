@@ -1,10 +1,50 @@
+/* Basic global styles (Tailwind removed) */
+/* Import Amita font for PharmaSync title */
+@import url('https://fonts.googleapis.com/css2?family=Amita:wght@400;700&display=swap');
+
+/* Minimal utility fallbacks used by the components */
+.min-h-screen { min-height: 100vh; }
+.text-5xl { font-size: 3rem; line-height: 1; }
+.font-bold { font-weight: 700; }
+.italic { font-style: italic; }
+.max-w-7xl { max-width: 80rem; margin-left: auto; margin-right: auto; }
+.mx-auto { margin-left: auto; margin-right: auto; }
+.px-8 { padding-left: 2rem; padding-right: 2rem; }
+.py-16 { padding-top: 4rem; padding-bottom: 4rem; }
+.bg-black { background-color: #000; }
+.text-white { color: #fff; }
+.rounded { border-radius: 0.25rem; }
+.rounded-lg { border-radius: 0.5rem; }
+.shadow-lg { box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
+.w-full { width: 100%; }
+.w-2\/5 { width: 40%; }
+.w-3\/5 { width: 60%; }
+.pr-16 { padding-right: 4rem; }
+.p-8 { padding: 2rem; }
+.mb-8 { margin-bottom: 2rem; }
+.max-w-md { max-width: 28rem; }
+.flex { display: flex; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.justify-center { justify-content: center; }
+.relative { position: relative; }
+.absolute { position: absolute; }
+.inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
+.opacity-30 { opacity: 0.3; }
+.object-contain { object-fit: contain; }
+.font-medium { font-weight: 500; }
+.text-center { text-align: center; }
+.text-gray-700 { color: #4a5568; }
+.text-gray-600 { color: #718096; }
+.bg-white { background-color: #fff; }
+.border-t { border-top: 1px solid rgba(0,0,0,0.08); }
+.mt-16 { margin-top: 4rem; }
+.p-4 { padding: 1rem; }
+
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: Arial, sans-serif;
 }
 
 code {
