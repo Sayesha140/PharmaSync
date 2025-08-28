@@ -1,4 +1,3 @@
-# backend/db.py
 import oracledb
 import config
 

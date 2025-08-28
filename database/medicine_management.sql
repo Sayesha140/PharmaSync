@@ -1,108 +1,179 @@
+---------------------------------------------------ADD MEDICINE-------------------------------------------------------------
+
+
+
 CREATE OR REPLACE PROCEDURE ADD_MEDICINE (
-    p_name          IN MEDICINE.NAME%TYPE,
-    p_generic_name  IN MEDICINE.GENERIC_NAME%TYPE,
-    p_category      IN MEDICINE.CATEGORY%TYPE,
-    p_dosage_form   IN MEDICINE.DOSAGE_FORM%TYPE,
-    p_unit_price    IN MEDICINE.UNIT_PRICE%TYPE DEFAULT NULL,
-    p_description   IN MEDICINE.DESCRIPTION%TYPE DEFAULT NULL
-) AS
-BEGIN
+    p_name         IN MEDICINE.NAME%TYPE,
+    p_generic_name IN MEDICINE.GENERIC_NAME%TYPE,
+    p_category     IN MEDICINE.CATEGORY%TYPE,
+    p_dosage_form  IN MEDICINE.DOSAGE_FORM%TYPE,
+    p_description  IN MEDICINE.DESCRIPTION%TYPE
+) 
+IS
+    v_id MEDICINE.MEDICINE_ID%TYPE;
+    v_count NUMBER;
     
-    INSERT INTO MEDICINE (
-        NAME,
-        GENERIC_NAME,
-        CATEGORY,
-        DOSAGE_FORM,
-        UNIT_PRICE,
-        DESCRIPTION,
-        UPDATED_AT
-    ) VALUES (
-        p_name,
-        p_generic_name,
-        p_category,
-        p_dosage_form,
-        NVL(p_unit_price, 0),         -- default to 0 if not provided
-        NVL(p_description, 'N/A'), -- default if not provided
-        SYSDATE
-    );
+BEGIN
 
-    DBMS_OUTPUT.PUT_LINE('Medicine added successfully.' );
+    -- Check if medicine already exists and active
+    SELECT COUNT(*) INTO v_count
+    FROM MEDICINE
+    WHERE NAME = p_name
+      AND GENERIC_NAME = p_generic_name
+      AND CATEGORY = p_category
+      AND DOSAGE_FORM = p_dosage_form
+      AND ACTIVE = 1;
 
-EXCEPTION
-    WHEN DUP_VAL_ON_INDEX THEN
-        DBMS_OUTPUT.PUT_LINE(' Medicine already exists.');
-    WHEN OTHERS THEN
-        DBMS_OUTPUT.PUT_LINE('Error adding medicine');
+
+    IF v_count > 0 THEN
+        RAISE_APPLICATION_ERROR(-20001, 'Medicine already exists.');
+    END IF;
+    
+    
+
+    -- Check if medicine exists but inactive
+    
+    BEGIN
+        SELECT MEDICINE_ID INTO v_id
+        FROM MEDICINE
+        WHERE NAME = p_name
+          AND GENERIC_NAME = p_generic_name
+          AND CATEGORY = p_category
+          AND DOSAGE_FORM = p_dosage_form
+          AND ACTIVE = 0
+        FETCH FIRST 1 ROW ONLY;
+
+
+        -- Reactivate medicine and its inventory
+        
+        UPDATE MEDICINE
+        SET ACTIVE = 1,
+        DESCRIPTION = NVL(p_description, 'N/A')
+        WHERE MEDICINE_ID = v_id;
+
+        UPDATE INVENTORY
+        SET ACTIVE = 1
+        WHERE MEDICINE_ID = v_id;
+
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            -- Insert new medicine
+            INSERT INTO MEDICINE (NAME, GENERIC_NAME, CATEGORY, DOSAGE_FORM, DESCRIPTION)
+            VALUES (p_name, p_generic_name, p_category, p_dosage_form, NVL(p_description, 'N/A'));
+    END;
 END;
 /
+
+
+
+
+
+
+
+---------------------------------------------------DELETE MEDICINE-------------------------------------------------------------
+
 
 
 
 CREATE OR REPLACE PROCEDURE DELETE_MEDICINE (
     p_medicine_id IN MEDICINE.MEDICINE_ID%TYPE
-) AS
+) 
+IS
+    v_count NUMBER;
+    
 BEGIN
-    DELETE FROM MEDICINE
-    WHERE MEDICINE_ID = p_medicine_id;
+    
+    SELECT COUNT(*) INTO v_count
+    FROM MEDICINE
+    WHERE MEDICINE_ID = p_medicine_id AND ACTIVE = 1;
 
-    IF SQL%ROWCOUNT = 0 THEN
-        DBMS_OUTPUT.PUT_LINE('No medicine found with ID: ' || p_medicine_id);
-    ELSE
-        DBMS_OUTPUT.PUT_LINE('Medicine deleted successfully: ID ' || p_medicine_id);
+    IF v_count = 0 THEN
+        RAISE_APPLICATION_ERROR(-20002, 'Medicine not found or already inactive.');
     END IF;
 
-EXCEPTION
-    WHEN OTHERS THEN
-        DBMS_OUTPUT.PUT_LINE('Error deleting medicine: ' || SQLERRM);
+    
+    UPDATE MEDICINE
+    SET ACTIVE = 0
+    WHERE MEDICINE_ID = p_medicine_id;
+
+    
+    UPDATE INVENTORY
+    SET ACTIVE = 0
+    WHERE MEDICINE_ID = p_medicine_id;
 END;
 /
+
+
+
+
+---------------------------------------------------UPDATE MEDICINE-------------------------------------------------------------
 
 
 
 CREATE OR REPLACE PROCEDURE UPDATE_MEDICINE (
     p_medicine_id   IN MEDICINE.MEDICINE_ID%TYPE,
-    p_name          IN MEDICINE.NAME%TYPE DEFAULT NULL,
-    p_generic_name  IN MEDICINE.GENERIC_NAME%TYPE DEFAULT NULL,
-    p_category      IN MEDICINE.CATEGORY%TYPE DEFAULT NULL,
-    p_dosage_form   IN MEDICINE.DOSAGE_FORM%TYPE DEFAULT NULL,
-    p_unit_price    IN MEDICINE.UNIT_PRICE%TYPE DEFAULT NULL,
-    p_description   IN MEDICINE.DESCRIPTION%TYPE DEFAULT NULL
-) AS
-BEGIN
-    UPDATE MEDICINE
-    SET
-        NAME = NVL(p_name, NAME),
-        GENERIC_NAME = NVL(p_generic_name, GENERIC_NAME),
-        CATEGORY = NVL(p_category, CATEGORY),
-        DOSAGE_FORM = NVL(p_dosage_form, DOSAGE_FORM),
-        UNIT_PRICE = NVL(p_unit_price, UNIT_PRICE),
-        DESCRIPTION = NVL(p_description, DESCRIPTION)
-    WHERE MEDICINE_ID = p_medicine_id;
+    p_name          IN MEDICINE.NAME%TYPE,
+    p_generic_name  IN MEDICINE.GENERIC_NAME%TYPE,
+    p_category      IN MEDICINE.CATEGORY%TYPE,
+    p_dosage_form   IN MEDICINE.DOSAGE_FORM%TYPE,
+    p_description   IN MEDICINE.DESCRIPTION%TYPE
+) 
 
-    IF SQL%ROWCOUNT = 0 THEN
-        DBMS_OUTPUT.PUT_LINE('No medicine found with ID: ' || p_medicine_id);
-    ELSE
-        DBMS_OUTPUT.PUT_LINE('Medicine updated successfully: ID ' || p_medicine_id);
+IS
+    v_count NUMBER;
+    
+BEGIN
+    
+    SELECT COUNT(*) INTO v_count
+    FROM MEDICINE
+    WHERE MEDICINE_ID = p_medicine_id AND ACTIVE = 1;
+
+    IF v_count = 0 THEN
+        RAISE_APPLICATION_ERROR(-20003, 'Medicine not found or inactive.');
     END IF;
 
-EXCEPTION
-    WHEN DUP_VAL_ON_INDEX THEN
-        DBMS_OUTPUT.PUT_LINE('Update failed: duplicate medicine entry.');
-    WHEN OTHERS THEN
-        DBMS_OUTPUT.PUT_LINE('Error updating medicine: ' || SQLERRM);
+    
+    UPDATE MEDICINE
+    SET NAME         = NVL(p_name, NAME),
+        GENERIC_NAME = NVL(p_generic_name, GENERIC_NAME),
+        CATEGORY     = NVL(p_category, CATEGORY),
+        DOSAGE_FORM  = NVL(p_dosage_form, DOSAGE_FORM),
+        DESCRIPTION  = NVL(p_description, DESCRIPTION)
+    WHERE MEDICINE_ID = p_medicine_id;
 END;
 /
 
 
 
-CREATE OR REPLACE TRIGGER trg_update_medicine
-BEFORE UPDATE ON MEDICINE
-FOR EACH ROW
+
+----------------------------------------------------VIEW MEDICINE--------------------------------------------------------------
+
+
+
+CREATE OR REPLACE PROCEDURE VIEW_ACTIVE_MEDICINES (
+    p_result OUT SYS_REFCURSOR
+) AS
 BEGIN
-    :NEW.UPDATED_AT := SYSDATE;
+    OPEN p_result FOR
+        SELECT MEDICINE_ID,
+               NAME,
+               GENERIC_NAME,
+               CATEGORY,
+               DOSAGE_FORM,
+               DESCRIPTION,
+               STOCK
+        FROM MEDICINE
+        WHERE ACTIVE = 1
+        ORDER BY NAME;
 END;
 /
+
+
+
+
 
 
 commit;
+
+
 
