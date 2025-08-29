@@ -1,8 +1,10 @@
 from flask import Blueprint, request, jsonify
 from db import get_connection
-import oracledb;
+import oracledb
+
 
 medicine_bp = Blueprint('medicine_bp', __name__)
+
 
 # ------------------------- ADD MEDICINE -------------------------
 
@@ -11,7 +13,6 @@ def add_medicine():
     data = request.json or {}
 
     required_fields = ['name', 'generic_name', 'category', 'dosage_form']
-    
     for field in required_fields:
         if not data.get(field):
             return jsonify({"error": f"{field} is required"}), 400
@@ -20,12 +21,13 @@ def add_medicine():
     generic_name = data.get('generic_name')
     category = data.get('category')
     dosage_form = data.get('dosage_form')
-    description = data.get('description') or None  
+    sell_price = data.get('sell_price') or 0
+    description = data.get('description') or None
 
     try:
         conn = get_connection()
         cursor = conn.cursor()
-        cursor.callproc('ADD_MEDICINE', [name, generic_name, category, dosage_form, description])
+        cursor.callproc('ADD_MEDICINE', [name, generic_name, category, dosage_form, sell_price, description])
         conn.commit()
         return jsonify({"message": "Medicine added successfully"}), 200
     except Exception as e:
@@ -57,6 +59,7 @@ def delete_medicine():
         cursor.close()
         conn.close()
 
+
 # ------------------------- UPDATE MEDICINE -------------------------
 
 @medicine_bp.route('/update-medicine', methods=['POST'])
@@ -71,12 +74,14 @@ def update_medicine():
     generic_name = data.get('generic_name')
     category = data.get('category')
     dosage_form = data.get('dosage_form')
-    description = data.get('description') or None  
+    sell_price = data.get('sell_price')
+    stock = data.get('stock')
+    description = data.get('description')
 
     try:
         conn = get_connection()
         cursor = conn.cursor()
-        cursor.callproc('UPDATE_MEDICINE', [medicine_id, name, generic_name, category, dosage_form, description])
+        cursor.callproc('UPDATE_MEDICINE', [medicine_id, name, generic_name, category, dosage_form, sell_price, stock, description])
         conn.commit()
         return jsonify({"message": "Medicine updated successfully"}), 200
     except Exception as e:
@@ -84,8 +89,6 @@ def update_medicine():
     finally:
         cursor.close()
         conn.close()
-
-
 
 
 # ------------------------- VIEW ACTIVE MEDICINES -------------------------
@@ -96,16 +99,10 @@ def view_medicines():
         conn = get_connection()
         cursor = conn.cursor()
 
-        
         ref_cursor = cursor.var(oracledb.CURSOR)
-
-        
         cursor.callproc('VIEW_ACTIVE_MEDICINES', [ref_cursor])
-
-        
         rows = ref_cursor.getvalue().fetchall()
 
-        
         medicines = []
         for row in rows:
             medicines.append({
@@ -114,8 +111,9 @@ def view_medicines():
                 "generic_name": row[2],
                 "category": row[3],
                 "dosage_form": row[4],
-                "description": row[5],
-                "stock": row[6]
+                "sell_price": float(row[5]),
+                "description": row[6],
+                # "stock": row[7]
             })
 
         return jsonify(medicines), 200

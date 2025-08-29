@@ -7,6 +7,7 @@ CREATE OR REPLACE PROCEDURE ADD_MEDICINE (
     p_generic_name IN MEDICINE.GENERIC_NAME%TYPE,
     p_category     IN MEDICINE.CATEGORY%TYPE,
     p_dosage_form  IN MEDICINE.DOSAGE_FORM%TYPE,
+    p_sell_price   IN MEDICINE.SELL_PRICE%TYPE DEFAULT 0,
     p_description  IN MEDICINE.DESCRIPTION%TYPE
 ) 
 IS
@@ -48,7 +49,8 @@ BEGIN
         
         UPDATE MEDICINE
         SET ACTIVE = 1,
-        DESCRIPTION = NVL(p_description, 'N/A')
+        DESCRIPTION = NVL(p_description, 'N/A'),
+        SELL_PRICE = NVL(p_sell_price, SELL_PRICE)
         WHERE MEDICINE_ID = v_id;
 
         UPDATE INVENTORY
@@ -58,8 +60,8 @@ BEGIN
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
             -- Insert new medicine
-            INSERT INTO MEDICINE (NAME, GENERIC_NAME, CATEGORY, DOSAGE_FORM, DESCRIPTION)
-            VALUES (p_name, p_generic_name, p_category, p_dosage_form, NVL(p_description, 'N/A'));
+            INSERT INTO MEDICINE (NAME, GENERIC_NAME, CATEGORY, DOSAGE_FORM, SELL_PRICE, DESCRIPTION)
+            VALUES (p_name, p_generic_name, p_category, p_dosage_form, NVL(p_sell_price,0), NVL(p_description, 'N/A'));
     END;
 END;
 /
@@ -112,18 +114,17 @@ END;
 
 CREATE OR REPLACE PROCEDURE UPDATE_MEDICINE (
     p_medicine_id   IN MEDICINE.MEDICINE_ID%TYPE,
-    p_name          IN MEDICINE.NAME%TYPE,
-    p_generic_name  IN MEDICINE.GENERIC_NAME%TYPE,
-    p_category      IN MEDICINE.CATEGORY%TYPE,
-    p_dosage_form   IN MEDICINE.DOSAGE_FORM%TYPE,
-    p_description   IN MEDICINE.DESCRIPTION%TYPE
+    p_name          IN MEDICINE.NAME%TYPE DEFAULT NULL,
+    p_generic_name  IN MEDICINE.GENERIC_NAME%TYPE DEFAULT NULL,
+    p_category      IN MEDICINE.CATEGORY%TYPE DEFAULT NULL,
+    p_dosage_form   IN MEDICINE.DOSAGE_FORM%TYPE DEFAULT NULL,
+    p_sell_price    IN MEDICINE.SELL_PRICE%TYPE DEFAULT NULL,
+--    p_stock         IN MEDICINE.STOCK%TYPE DEFAULT NULL,
+    p_description   IN MEDICINE.DESCRIPTION%TYPE DEFAULT NULL
 ) 
-
 IS
     v_count NUMBER;
-    
 BEGIN
-    
     SELECT COUNT(*) INTO v_count
     FROM MEDICINE
     WHERE MEDICINE_ID = p_medicine_id AND ACTIVE = 1;
@@ -132,16 +133,18 @@ BEGIN
         RAISE_APPLICATION_ERROR(-20003, 'Medicine not found or inactive.');
     END IF;
 
-    
     UPDATE MEDICINE
     SET NAME         = NVL(p_name, NAME),
         GENERIC_NAME = NVL(p_generic_name, GENERIC_NAME),
         CATEGORY     = NVL(p_category, CATEGORY),
         DOSAGE_FORM  = NVL(p_dosage_form, DOSAGE_FORM),
+        SELL_PRICE   = NVL(p_sell_price, SELL_PRICE),
+--        STOCK        = NVL(p_stock, STOCK),
         DESCRIPTION  = NVL(p_description, DESCRIPTION)
     WHERE MEDICINE_ID = p_medicine_id;
 END;
 /
+
 
 
 
@@ -160,14 +163,14 @@ BEGIN
                GENERIC_NAME,
                CATEGORY,
                DOSAGE_FORM,
-               DESCRIPTION,
-               STOCK
+               SELL_PRICE,
+               DESCRIPTION
+--               STOCK
         FROM MEDICINE
         WHERE ACTIVE = 1
         ORDER BY NAME;
 END;
 /
-
 
 
 

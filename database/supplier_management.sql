@@ -185,6 +185,11 @@ END;
 
 
 
+
+
+-----------------------------------------------------test---------------------------------------------------------------------
+
+--set serveroutput on;
 --DECLARE
 --    rc SYS_REFCURSOR;
 --    v_supplier_id supplier.supplier_id%TYPE;
