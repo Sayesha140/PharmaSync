@@ -10,6 +10,7 @@ from routes.inventory_routes import inventory_bp
 from routes.alerts_routes import alerts_bp
 from routes.stats_routes import stats_bp
 from routes.auth_routes import auth_bp
+from routes.sales_routes import sales_bp
 
 app = Flask(__name__)
 app.secret_key = config.SECRET_KEY
@@ -26,6 +27,7 @@ app.register_blueprint(stats_bp)
 app.register_blueprint(purchase_bp)
 app.register_blueprint(inventory_bp)
 app.register_blueprint(auth_bp)
+app.register_blueprint(sales_bp)
 
 
 
