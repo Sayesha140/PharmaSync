@@ -47,25 +47,28 @@ def low_stock_alert():
 #about to expire in 30 days
 
 
+
 @alerts_bp.route("/expiry-alert", methods=["GET"])
 @admin_required
 def expiry_alert():
     alert_days = 30  
+    conn = None
+    cursor = None
     try:
         conn = get_connection()
         cursor = conn.cursor()
-        today = datetime.today().date()
-        expiry_limit = today + timedelta(days=alert_days)
 
         cursor.execute("""
             SELECT m.MEDICINE_ID, m.NAME, m.GENERIC_NAME, m.CATEGORY, m.DOSAGE_FORM,
                    i.BATCH_NO, i.EXPIRY_DATE, i.QUANTITY
             FROM MEDICINE m
             JOIN INVENTORY i ON m.MEDICINE_ID = i.MEDICINE_ID
-            WHERE m.ACTIVE = 1 AND i.ACTIVE = 1
-              AND i.EXPIRY_DATE <= :expiry_limit
+            WHERE m.ACTIVE = 1 
+              AND i.ACTIVE = 1
+              AND i.EXPIRY_DATE BETWEEN SYSDATE AND SYSDATE + :days
             ORDER BY i.EXPIRY_DATE ASC
-        """, [expiry_limit])
+        """, [alert_days])
+
         rows = cursor.fetchall()
         result = [
             {
@@ -79,8 +82,13 @@ def expiry_alert():
                 "quantity": int(r[7])
             } for r in rows
         ]
-        cursor.close()
-        conn.close()
-        return jsonify(result)
+        return jsonify(result), 200
+
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
