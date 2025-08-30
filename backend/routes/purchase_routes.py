@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from routes.auth_routes import admin_required
 from db import get_connection
 import oracledb
 from datetime import datetime
@@ -9,6 +10,7 @@ purchase_bp = Blueprint("purchase_bp", __name__)
 # add a purchase
 
 @purchase_bp.route("/add_purchase", methods=["POST"])
+@admin_required
 def add_purchase():
     data = request.get_json()
 
@@ -75,6 +77,7 @@ def add_purchase():
 
 
 @purchase_bp.route("/all-purchases", methods=["GET"])
+@admin_required
 def get_purchases():
     conn = get_connection()
     cur = conn.cursor()
@@ -96,6 +99,7 @@ def get_purchases():
 
 
 @purchase_bp.route("/purchase-details/<int:purchase_id>", methods=["GET"])
+@admin_required
 def purchase_details(purchase_id):
     conn = get_connection()
     cur = conn.cursor()
@@ -121,3 +125,32 @@ def purchase_details(purchase_id):
     cur.close()
     conn.close()
     return jsonify(result)
+
+
+
+
+# ------------------------- DELETE PURCHASE -------------------------
+
+
+
+@purchase_bp.route('/delete-purchase', methods=['POST'])
+@admin_required
+def delete_purchase():
+    data = request.json or {}
+    purchase_id = data.get('purchase_id')
+
+    if not purchase_id:
+        return jsonify({"error": "purchase_id is required"}), 400
+
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.callproc('DELETE_PURCHASE', [purchase_id])
+        conn.commit()
+        return jsonify({"message": "Purchase deleted successfully"}), 200
+    except oracledb.DatabaseError as e:
+        error_obj, = e.args
+        return jsonify({"error": str(error_obj)}), 400
+    finally:
+        cursor.close()
+        conn.close()

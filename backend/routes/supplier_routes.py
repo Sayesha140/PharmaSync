@@ -1,12 +1,15 @@
 from flask import Blueprint, request, jsonify
+from routes.auth_routes import admin_required
 from db import get_connection
 import oracledb
 
 supplier_bp = Blueprint('supplier_bp', __name__)
 
+
 # ------------------------- ADD SUPPLIER -------------------------
 
 @supplier_bp.route('/add-supplier', methods=['POST'])
+@admin_required
 def add_supplier():
     data = request.json or {}
 
@@ -36,6 +39,7 @@ def add_supplier():
 # ------------------------- DELETE SUPPLIER -------------------------
 
 @supplier_bp.route('/delete-supplier', methods=['POST'])
+@admin_required
 def delete_supplier():
     data = request.json or {}
     supplier_id = data.get('supplier_id')
@@ -58,6 +62,7 @@ def delete_supplier():
 # ------------------------- UPDATE SUPPLIER -------------------------
 
 @supplier_bp.route('/update-supplier', methods=['POST'])
+@admin_required
 def update_supplier():
     data = request.json or {}
     supplier_id = data.get('supplier_id')
@@ -87,6 +92,7 @@ def update_supplier():
 
 
 @supplier_bp.route('/view-suppliers-status', methods=['GET'])
+@admin_required
 def view_suppliers():
     try:
         conn = get_connection()

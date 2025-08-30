@@ -1,6 +1,8 @@
 from flask import Blueprint, jsonify
 from db import get_connection
 from datetime import datetime, timedelta
+from routes.auth_routes import admin_required
+
 
 alerts_bp = Blueprint("alerts", __name__)
 
@@ -8,6 +10,7 @@ alerts_bp = Blueprint("alerts", __name__)
 # has stock less than 10 (both in inventory and registered medicines)
 
 @alerts_bp.route("/low-stock-alert", methods=["GET"])
+@admin_required
 def low_stock_alert():
     threshold = 10  
     try:
@@ -45,6 +48,7 @@ def low_stock_alert():
 
 
 @alerts_bp.route("/expiry-alert", methods=["GET"])
+@admin_required
 def expiry_alert():
     alert_days = 30  
     try:

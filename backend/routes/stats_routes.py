@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify
+from routes.auth_routes import admin_required
 from db import get_connection
 from datetime import date
 
@@ -7,6 +8,7 @@ stats_bp= Blueprint("stats", __name__)
 # 1. All medicines in inventory including registered with total stock
 
 @stats_bp.route("/inventory-stat", methods=["GET"])
+@admin_required
 def all_medicines_stock():
     conn = get_connection()
     cur = conn.cursor()
@@ -29,6 +31,7 @@ def all_medicines_stock():
 # 2. Out-of-stock (0) medicines
 
 @stats_bp.route("/out-of-stock-stat", methods=["GET"])
+@admin_required
 def out_of_stock():
     conn = get_connection()
     cur = conn.cursor()
@@ -56,6 +59,7 @@ def out_of_stock():
 # 3. Already expired medicines
 
 @stats_bp.route("/expired-medicine-stat", methods=["GET"])
+@admin_required
 def expired_medicines():
     today = date.today()
     conn = get_connection()
