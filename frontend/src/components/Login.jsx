@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const PharmacyLogin = ({ onNavigateToLanding }) => {
+const PharmacyLogin = ({ onNavigateToDashboard }) => {
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -15,15 +15,21 @@ const PharmacyLogin = ({ onNavigateToLanding }) => {
     }));
   };
 
-  const handleSubmit = () => {
-    console.log('Login attempt:', formData);
-    // Add your login logic here
-  };
+const handleSubmit = () => {
+  console.log('Login attempt:', formData);
+  // Simple validation
+  if (formData.username && formData.password) {
+    onNavigateToDashboard(); // Redirect to dashboard
+  } else {
+    alert('Please enter username and password');
+  }
+};
 
   const containerStyle = {
-    minHeight: '100vh',
+    height: '100vh',
     display: 'flex',
-    fontFamily: 'Arial, sans-serif'
+    fontFamily: 'Arial, sans-serif',
+    overflow: 'hidden'
   };
 
   const leftSectionStyle = {
@@ -33,9 +39,7 @@ const PharmacyLogin = ({ onNavigateToLanding }) => {
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: '48px',
-    position: 'relative',
-    overflow: 'hidden'
+    padding: '48px'
   };
 
   const rightSectionStyle = {
@@ -50,8 +54,7 @@ const PharmacyLogin = ({ onNavigateToLanding }) => {
 
   const welcomeTextStyle = {
     textAlign: 'center',
-    marginBottom: '32px',
-    zIndex: 10
+    marginBottom: '32px'
   };
 
   const welcomeTitleStyle = {
@@ -59,7 +62,7 @@ const PharmacyLogin = ({ onNavigateToLanding }) => {
     fontWeight: 'bold',
     color: 'white',
     marginBottom: '16px',
-    margin: 0
+    margin: '0 0 16px 0'
   };
 
   const welcomeSubtitleStyle = {
@@ -69,25 +72,10 @@ const PharmacyLogin = ({ onNavigateToLanding }) => {
     margin: 0
   };
 
-  const imageContainerStyle = {
-    backgroundColor: 'white',
-    borderRadius: '24px',
-    padding: '32px',
-    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-    maxWidth: '320px',
-    zIndex: 10
-  };
-
-  const placeholderStyle = {
-    width: '100%',
-    height: '256px',
-    backgroundColor: '#F3F4F6',
-    borderRadius: '8px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'column',
-    color: '#6B7280'
+  const imageStyle = {
+    width: '300px',
+    height: 'auto',
+    objectFit: 'contain'
   };
 
   const formContainerStyle = {
@@ -174,27 +162,12 @@ const PharmacyLogin = ({ onNavigateToLanding }) => {
           </p>
         </div>
 
-        {/* Pharmacy Illustration Container */}
-        <div style={imageContainerStyle}>
-          {/* Placeholder for your pharmacy image */}
-          <div style={placeholderStyle}>
-            <svg width="64" height="64" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
-            </svg>
-            <p style={{fontSize: '14px', textAlign: 'center', margin: '8px 0 0 0'}}>
-              Add your pharmacy<br />illustration here
-            </p>
-          </div>
-          
-          {/* Uncomment and use this when you add your image */}
-          {/* 
-          <img 
-            src="/pharmacist-bro.png" 
-            alt="Pharmacy illustration" 
-            style={{width: '100%', height: '256px', objectFit: 'contain', borderRadius: '8px'}}
-          />
-          */}
-        </div>
+        {/* Pharmacy Illustration - No Background Container */}
+        <img 
+          src="/landing.png" 
+          alt="Pharmacy illustration" 
+          style={imageStyle}
+        />
       </div>
 
       {/* Right Section - Login Form */}
