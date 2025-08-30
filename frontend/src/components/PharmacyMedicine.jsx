@@ -1,110 +1,99 @@
 import React, { useState } from 'react';
 
-const PharmacyInventory = ({ selectedMenu, setSelectedMenu }) => {
+const PharmacyMedicine = ({ selectedMenu, setSelectedMenu }) => {
   const [medicines, setMedicines] = useState([
     {
       id: 1,
       name: 'Paracetamol',
-      generic: 'Crocin',
+      genericName: 'Acetaminophen',
       category: 'Pain Relief',
-      supplier: 'MedSupply Co.',
-      batchNo: 'PC0001',
-      stock: 150,
-      minStock: 30,
-      expiryDate: '12/15/2025',
-      status: 'In Stock'
+      dosageForm: 'Tablet',
+      sellPrice: 25.50,
+      description: 'Pain reliever and fever reducer',
+      active: 1
     },
     {
       id: 2,
       name: 'Amoxicillin',
-      generic: 'Amoxil',
+      genericName: 'Amoxicillin Trihydrate',
       category: 'Antibiotic',
-      supplier: 'PharmaCorp Ltd.',
-      batchNo: 'AM0002',
-      stock: 12,
-      minStock: 20,
-      expiryDate: '3/20/2025',
-      status: 'Expired'
+      dosageForm: 'Capsule',
+      sellPrice: 180.00,
+      description: 'Broad-spectrum antibiotic for bacterial infections',
+      active: 1
     },
     {
       id: 3,
       name: 'Ibuprofen',
-      generic: 'Brufen',
+      genericName: 'Ibuprofen',
       category: 'Pain Relief',
-      supplier: 'HealthPlus Inc.',
-      batchNo: 'IB0003',
-      stock: 8,
-      minStock: 15,
-      expiryDate: '9/10/2024',
-      status: 'Expired'
+      dosageForm: 'Tablet',
+      sellPrice: 45.00,
+      description: 'Non-steroidal anti-inflammatory drug (NSAID)',
+      active: 1
     },
     {
       id: 4,
       name: 'Cetirizine',
-      generic: 'Zyrtec',
+      genericName: 'Cetirizine Hydrochloride',
       category: 'Antihistamine',
-      supplier: 'MediCore Solutions',
-      batchNo: 'CE0004',
-      stock: 75,
-      minStock: 25,
-      expiryDate: '7/30/2025',
-      status: 'Expired'
+      dosageForm: 'Tablet',
+      sellPrice: 12.00,
+      description: 'Antihistamine for allergy relief',
+      active: 1
     },
     {
       id: 5,
-      name: 'Aspirin',
-      generic: 'Dispirin',
-      category: 'Pain Relief',
-      supplier: 'MedSupply Co.',
-      batchNo: 'ASP005',
-      stock: 0,
-      minStock: 30,
-      expiryDate: '6/12/2025',
-      status: 'Expired'
+      name: 'Omeprazole',
+      genericName: 'Omeprazole',
+      category: 'Antacid',
+      dosageForm: 'Capsule',
+      sellPrice: 95.00,
+      description: 'Proton pump inhibitor for acid reflux',
+      active: 1
     },
     {
       id: 6,
-      name: 'Omeprazole',
-      generic: 'Prilosec',
-      category: 'Antacid',
-      supplier: 'PharmaCorp Ltd.',
-      batchNo: 'OM0006',
-      stock: 89,
-      minStock: 20,
-      expiryDate: '11/22/2025',
-      status: 'In Stock'
+      name: 'Metformin',
+      genericName: 'Metformin Hydrochloride',
+      category: 'Diabetes',
+      dosageForm: 'Tablet',
+      sellPrice: 15.75,
+      description: 'Type 2 diabetes medication',
+      active: 0
     },
     {
       id: 7,
-      name: 'Metformin',
-      generic: 'Glucophage',
-      category: 'Diabetes',
-      supplier: 'DiabetCare Inc.',
-      batchNo: 'MF0007',
-      stock: 5,
-      minStock: 25,
-      expiryDate: '8/15/2025',
-      status: 'In Stock'
+      name: 'Lisinopril',
+      genericName: 'Lisinopril',
+      category: 'Blood Pressure',
+      dosageForm: 'Tablet',
+      sellPrice: 32.25,
+      description: 'ACE inhibitor for high blood pressure',
+      active: 1
     },
     {
       id: 8,
-      name: 'Lisinopril',
-      generic: 'Prinivil',
-      category: 'Blood Pressure',
-      supplier: 'CardioMed Ltd.',
-      batchNo: 'LS0008',
-      stock: 67,
-      minStock: 30,
-      expiryDate: '10/30/2025',
-      status: 'In Stock'
+      name: 'Atorvastatin',
+      genericName: 'Atorvastatin Calcium',
+      category: 'Cholesterol',
+      dosageForm: 'Tablet',
+      sellPrice: 85.00,
+      description: 'Statin for cholesterol management',
+      active: 1
     }
   ]);
 
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingMedicine, setEditingMedicine] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('');
+  const [dosageFilter, setDosageFilter] = useState('');
 
-  // Styles
+  const categories = ['Pain Relief', 'Antibiotic', 'Antihistamine', 'Antacid', 'Diabetes', 'Blood Pressure', 'Cholesterol', 'Bronchodilator', 'Nasal Spray', 'Steroid'];
+  const dosageForms = ['Tablet', 'Capsule', 'Syrup', 'Injection', 'Cream', 'Ointment', 'Drop', 'Inhaler', 'Nasal Spray'];
+
+  // Styles (same structure as other pages)
   const containerStyle = {
     display: 'flex',
     height: '100vh',
@@ -255,25 +244,6 @@ const PharmacyInventory = ({ selectedMenu, setSelectedMenu }) => {
     textOverflow: 'ellipsis'
   };
 
-  const statusBadgeStyle = (status) => {
-    const colors = {
-      'In Stock': { bg: '#0B2D14', color: 'white' },
-      'Low Stock': { bg: '#F59E0B', color: 'white' },
-      'Out of Stock': { bg: '#DC2626', color: 'white' },
-      'Expired': { bg: '#7C2D12', color: 'white' }
-    };
-    const style = colors[status] || { bg: '#6B7280', color: 'white' };
-    
-    return {
-      backgroundColor: style.bg,
-      color: style.color,
-      padding: '2px 8px',
-      borderRadius: '12px',
-      fontSize: '10px',
-      fontWeight: '500'
-    };
-  };
-
   const actionButtonStyle = {
     background: 'none',
     border: 'none',
@@ -310,7 +280,7 @@ const PharmacyInventory = ({ selectedMenu, setSelectedMenu }) => {
     borderRadius: '8px',
     padding: '20px',
     width: '90%',
-    maxWidth: '500px',
+    maxWidth: '600px',
     maxHeight: '90vh',
     overflow: 'auto'
   };
@@ -332,6 +302,13 @@ const PharmacyInventory = ({ selectedMenu, setSelectedMenu }) => {
     boxSizing: 'border-box'
   };
 
+  const textareaStyle = {
+    ...inputStyle,
+    minHeight: '60px',
+    resize: 'vertical',
+    gridColumn: 'span 2'
+  };
+
   const labelStyle = {
     fontSize: '12px',
     fontWeight: '500',
@@ -340,43 +317,71 @@ const PharmacyInventory = ({ selectedMenu, setSelectedMenu }) => {
     display: 'block'
   };
 
-  const getStatus = (medicine) => {
-    // Check if expired first (takes priority)
-    const expiryDate = new Date(medicine.expiryDate);
-    const currentDate = new Date();
-    if (expiryDate < currentDate) return 'Expired';
-    
-    // Then check stock levels
-    if (medicine.stock === 0) return 'Out of Stock';
-    if (medicine.stock < 10) return 'Low Stock';
-    return 'In Stock';
+  const formatCurrency = (amount) => {
+    return `৳${amount.toFixed(2)}`;
   };
 
-  const handleAddInventory = (newInventory) => {
-    setMedicines([...medicines, { ...newInventory, id: Date.now() }]);
+  const checkUniqueness = (medicine, medicines, excludeId = null) => {
+    return !medicines.some(m => 
+      m.id !== excludeId &&
+      m.name.toLowerCase() === medicine.name.toLowerCase() &&
+      m.genericName.toLowerCase() === medicine.genericName.toLowerCase() &&
+      m.category === medicine.category &&
+      m.dosageForm === medicine.dosageForm
+    );
+  };
+
+  const handleAddMedicine = (newMedicine) => {
+    if (!checkUniqueness(newMedicine, medicines)) {
+      alert('A medicine with the same name, generic name, category, and dosage form already exists.');
+      return;
+    }
+
+    const medicine = {
+      ...newMedicine,
+      id: Date.now()
+    };
+    setMedicines([...medicines, medicine]);
     setShowAddForm(false);
   };
 
-  const handleEditInventory = (updatedInventory) => {
+  const handleEditMedicine = (updatedMedicine) => {
+    if (!checkUniqueness(updatedMedicine, medicines, updatedMedicine.id)) {
+      alert('A medicine with the same name, generic name, category, and dosage form already exists.');
+      return;
+    }
+
     setMedicines(medicines.map(med => 
-      med.id === updatedInventory.id ? updatedInventory : med
+      med.id === updatedMedicine.id ? updatedMedicine : med
     ));
     setEditingMedicine(null);
   };
 
-  const handleDeleteInventory = (id) => {
-    if (window.confirm('Are you sure you want to delete this inventory item?')) {
+  const handleDeleteMedicine = (id) => {
+    if (window.confirm('Are you sure you want to delete this medicine? This will affect inventory, purchase, and sales records.')) {
       setMedicines(medicines.filter(med => med.id !== id));
     }
   };
 
   const AddEditForm = ({ medicine, onSave, onCancel }) => {
     const [formData, setFormData] = useState(medicine || {
-      name: '', generic: '', category: '', supplier: '', batchNo: '', 
-      stock: '', minStock: '', expiryDate: ''
+      name: '',
+      genericName: '',
+      category: '',
+      dosageForm: '',
+      sellPrice: '',
+      description: ''
     });
 
     const handleSubmit = () => {
+      if (!formData.name || !formData.genericName || !formData.category || !formData.dosageForm) {
+        alert('Please fill in all required fields (Name, Generic Name, Category, Dosage Form)');
+        return;
+      }
+      if (!formData.sellPrice || formData.sellPrice <= 0) {
+        alert('Please enter a valid sell price');
+        return;
+      }
       onSave(formData);
     };
 
@@ -384,12 +389,12 @@ const PharmacyInventory = ({ selectedMenu, setSelectedMenu }) => {
       <div style={modalStyle}>
         <div style={modalContentStyle}>
           <h3 style={{margin: '0 0 20px 0', fontSize: '18px'}}>
-            {medicine ? 'Edit Inventory' : 'Add Inventory Item'}
+            {medicine ? 'Edit Medicine' : 'Add New Medicine'}
           </h3>
           
           <div style={formGridStyle}>
             <div>
-              <label style={labelStyle}>Medicine Name</label>
+              <label style={labelStyle}>Medicine Name *</label>
               <input
                 style={inputStyle}
                 value={formData.name}
@@ -398,65 +403,60 @@ const PharmacyInventory = ({ selectedMenu, setSelectedMenu }) => {
               />
             </div>
             <div>
-              <label style={labelStyle}>Generic Name</label>
+              <label style={labelStyle}>Generic Name *</label>
               <input
                 style={inputStyle}
-                value={formData.generic}
-                onChange={(e) => setFormData({...formData, generic: e.target.value})}
+                value={formData.genericName}
+                onChange={(e) => setFormData({...formData, genericName: e.target.value})}
                 placeholder="Enter generic name"
               />
             </div>
             <div>
-              <label style={labelStyle}>Category</label>
+              <label style={labelStyle}>Category *</label>
               <select
                 style={inputStyle}
                 value={formData.category}
                 onChange={(e) => setFormData({...formData, category: e.target.value})}
               >
                 <option value="">Select Category</option>
-                <option value="Pain Relief">Pain Relief</option>
-                <option value="Antibiotic">Antibiotic</option>
-                <option value="Antihistamine">Antihistamine</option>
-                <option value="Blood Pressure">Blood Pressure</option>
-                <option value="Diabetes">Diabetes</option>
-                <option value="Antacid">Antacid</option>
+                {categories.map(cat => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
               </select>
             </div>
             <div>
-              <label style={labelStyle}>Supplier</label>
-              <input
+              <label style={labelStyle}>Dosage Form *</label>
+              <select
                 style={inputStyle}
-                value={formData.supplier}
-                onChange={(e) => setFormData({...formData, supplier: e.target.value})}
-                placeholder="Enter supplier name"
-              />
+                value={formData.dosageForm}
+                onChange={(e) => setFormData({...formData, dosageForm: e.target.value})}
+              >
+                <option value="">Select Dosage Form</option>
+                {dosageForms.map(form => (
+                  <option key={form} value={form}>{form}</option>
+                ))}
+              </select>
             </div>
             <div>
-              <label style={labelStyle}>Batch No.</label>
-              <input
-                style={inputStyle}
-                value={formData.batchNo}
-                onChange={(e) => setFormData({...formData, batchNo: e.target.value})}
-                placeholder="Enter batch number"
-              />
-            </div>
-            <div>
-              <label style={labelStyle}>Stock Quantity</label>
+              <label style={labelStyle}>Sell Price (৳) *</label>
               <input
                 style={inputStyle}
                 type="number"
-                value={formData.stock}
-                onChange={(e) => setFormData({...formData, stock: parseInt(e.target.value) || 0})}
-                placeholder="Enter stock quantity"
+                step="0.01"
+                min="0.01"
+                value={formData.sellPrice}
+                onChange={(e) => setFormData({...formData, sellPrice: parseFloat(e.target.value) || ''})}
+                placeholder="0.00"
               />
             </div>
+            <div></div>
             <div>
-              <label style={labelStyle}>Expiry Date</label>
-              <input
-                style={inputStyle}
-                type="date"
-                value={formData.expiryDate}
-                onChange={(e) => setFormData({...formData, expiryDate: e.target.value})}
+              <label style={labelStyle}>Description</label>
+              <textarea
+                style={textareaStyle}
+                value={formData.description}
+                onChange={(e) => setFormData({...formData, description: e.target.value})}
+                placeholder="Enter medicine description or usage instructions"
               />
             </div>
           </div>
@@ -487,13 +487,24 @@ const PharmacyInventory = ({ selectedMenu, setSelectedMenu }) => {
                 fontSize: '12px'
               }}
             >
-              {medicine ? 'Update' : 'Add Inventory'}
+              {medicine ? 'Update Medicine' : 'Add Medicine'}
             </button>
           </div>
         </div>
       </div>
     );
   };
+
+  const filteredMedicines = medicines.filter(medicine => {
+    const matchesSearch = medicine.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         medicine.genericName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         medicine.description.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesCategory = !categoryFilter || medicine.category === categoryFilter;
+    const matchesDosage = !dosageFilter || medicine.dosageForm === dosageFilter;
+    
+    return matchesSearch && matchesCategory && matchesDosage;
+  });
 
   return (
     <div style={containerStyle}>
@@ -517,36 +528,42 @@ const PharmacyInventory = ({ selectedMenu, setSelectedMenu }) => {
         {/* Header */}
         <div style={headerStyle}>
           <div style={headerTopStyle}>
-            <h1 style={titleStyle}>Available Stock</h1>
+            <h1 style={titleStyle}>Medicine Catalog</h1>
             <button 
               style={addButtonStyle}
               onClick={() => setShowAddForm(true)}
             >
-              Add Inventory
+              Add Medicine
             </button>
           </div>
-          <p style={subtitleStyle}>Showing 1 of 8 inventory items</p>
+          <p style={subtitleStyle}>Showing {filteredMedicines.length} of {medicines.length} medicines</p>
           
           <div style={searchRowStyle}>
             <input
               style={searchInputStyle}
-              placeholder="Search by name, brand, batch, or supplier..."
+              placeholder="Search by name, generic name, or description..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <select style={selectStyle}>
-              <option>All Categories</option>
-              <option>Pain Relief</option>
-              <option>Antibiotic</option>
-              <option>Antihistamine</option>
-              <option>Blood Pressure</option>
-              <option>Diabetes</option>
+            <select 
+              style={selectStyle}
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
+            >
+              <option value="">All Categories</option>
+              {categories.map(cat => (
+                <option key={cat} value={cat}>{cat}</option>
+              ))}
             </select>
-            <select style={selectStyle}>
-              <option>All Status</option>
-              <option>In Stock</option>
-              <option>Low Stock</option>
-              <option>Out of Stock</option>
+            <select 
+              style={selectStyle}
+              value={dosageFilter}
+              onChange={(e) => setDosageFilter(e.target.value)}
+            >
+              <option value="">All Dosage Forms</option>
+              {dosageForms.map(form => (
+                <option key={form} value={form}>{form}</option>
+              ))}
             </select>
           </div>
         </div>
@@ -557,39 +574,29 @@ const PharmacyInventory = ({ selectedMenu, setSelectedMenu }) => {
             <thead>
               <tr>
                 <th style={{...tableHeaderStyle, width: '22%'}}>Medicine Details</th>
-                <th style={{...tableHeaderStyle, width: '14%'}}>Category</th>
-                <th style={{...tableHeaderStyle, width: '16%'}}>Supplier</th>
-                <th style={{...tableHeaderStyle, width: '12%'}}>Batch No.</th>
-                <th style={{...tableHeaderStyle, width: '14%'}}>Stock</th>
-                <th style={{...tableHeaderStyle, width: '12%'}}>Expiry Date</th>
-                <th style={{...tableHeaderStyle, width: '10%'}}>Status</th>
+                <th style={{...tableHeaderStyle, width: '16%'}}>Category</th>
+                <th style={{...tableHeaderStyle, width: '14%'}}>Dosage Form</th>
+                <th style={{...tableHeaderStyle, width: '12%'}}>Sell Price</th>
+                <th style={{...tableHeaderStyle, width: '26%'}}>Description</th>
                 <th style={{...tableHeaderStyle, width: '10%'}}>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {medicines
-                .filter(med => 
-                  med.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                  med.generic.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                  med.supplier.toLowerCase().includes(searchTerm.toLowerCase())
-                )
-                .map((medicine) => (
+              {filteredMedicines.map((medicine) => (
                 <tr key={medicine.id}>
                   <td style={tableCellStyle}>
-                    <div style={{fontWeight: '600', color: '#1F2937'}}>{medicine.name}</div>
-                    <div style={{fontSize: '10px', color: '#6B7280'}}>{medicine.generic}</div>
+                    <div style={{fontWeight: '600', color: '#1F2937', marginBottom: '2px'}}>{medicine.name}</div>
+                    <div style={{fontSize: '10px', color: '#6B7280'}}>{medicine.genericName}</div>
                   </td>
                   <td style={tableCellStyle}>{medicine.category}</td>
-                  <td style={tableCellStyle}>{medicine.supplier}</td>
-                  <td style={tableCellStyle}>{medicine.batchNo}</td>
-                  <td style={tableCellStyle}>
-                    <div>{medicine.stock} units</div>
+                  <td style={tableCellStyle}>{medicine.dosageForm}</td>
+                  <td style={{...tableCellStyle, fontWeight: '600', color: '#0B2D14'}}>
+                    {formatCurrency(medicine.sellPrice)}
                   </td>
-                  <td style={tableCellStyle}>{medicine.expiryDate}</td>
                   <td style={tableCellStyle}>
-                    <span style={statusBadgeStyle(getStatus(medicine))}>
-                      {getStatus(medicine)}
-                    </span>
+                    <div style={{fontSize: '10px', lineHeight: '1.3'}}>
+                      {medicine.description || 'No description'}
+                    </div>
                   </td>
                   <td style={tableCellStyle}>
                     <button 
@@ -599,10 +606,9 @@ const PharmacyInventory = ({ selectedMenu, setSelectedMenu }) => {
                     >
                       ✏️
                     </button>
-                    
                     <button 
                       style={{...actionButtonStyle, color: '#DC2626'}}
-                      onClick={() => handleDeleteInventory(medicine.id)}
+                      onClick={() => handleDeleteMedicine(medicine.id)}
                       title="Delete"
                     >
                       🗑️
@@ -616,7 +622,7 @@ const PharmacyInventory = ({ selectedMenu, setSelectedMenu }) => {
           {/* Pagination */}
           <div style={paginationStyle}>
             <span style={{fontSize: '12px', color: '#6B7280'}}>
-              Showing 1 to 8 of 8 entries
+              Showing 1 to {filteredMedicines.length} of {medicines.length} entries
             </span>
             <div style={{display: 'flex', gap: '5px'}}>
               <button style={{
@@ -650,7 +656,7 @@ const PharmacyInventory = ({ selectedMenu, setSelectedMenu }) => {
         {/* Add/Edit Forms */}
         {showAddForm && (
           <AddEditForm
-            onSave={handleAddInventory}
+            onSave={handleAddMedicine}
             onCancel={() => setShowAddForm(false)}
           />
         )}
@@ -658,7 +664,7 @@ const PharmacyInventory = ({ selectedMenu, setSelectedMenu }) => {
         {editingMedicine && (
           <AddEditForm
             medicine={editingMedicine}
-            onSave={handleEditInventory}
+            onSave={handleEditMedicine}
             onCancel={() => setEditingMedicine(null)}
           />
         )}
@@ -667,4 +673,4 @@ const PharmacyInventory = ({ selectedMenu, setSelectedMenu }) => {
   );
 };
 
-export default PharmacyInventory;
+export default PharmacyMedicine;

@@ -547,7 +547,7 @@ const PharmacySales = ({ selectedMenu, setSelectedMenu }) => {
       <div style={sidebarStyle}>
         <div style={logoStyle}>PharmaSync</div>
         
-        {['Dashboard', 'Inventory', 'Supplier', 'Sales', 'Report'].map((item) => (
+        {['Dashboard', 'Medicine', 'Purchase', 'Inventory', 'Supplier', 'Sales'].map((item) => (
           <button
             key={item}
             style={menuItemStyle(selectedMenu === item)}

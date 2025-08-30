@@ -19,10 +19,7 @@ const PharmacyDashboard = ({ selectedMenu, setSelectedMenu }) => {
 
   const todaysReport = [
     { label: 'Total Sales', amount: 0 },
-    { label: 'Total Purchase', amount: 0 },
-    { label: 'Cash Received', amount: 0 },
-    { label: 'Bank Receive', amount: 0 },
-    { label: 'Total Service', amount: 0 }
+    { label: 'Total Purchase', amount: 0 }
   ];
 
   // Styles
@@ -300,15 +297,15 @@ const PharmacyDashboard = ({ selectedMenu, setSelectedMenu }) => {
       <div style={sidebarStyle}>
         <div style={logoStyle}>PharmaSync</div>
         
-{['Dashboard', 'Inventory', 'Supplier', 'Sales', 'Report'].map((item) => (
-  <button
-    key={item}
-    style={menuItemStyle(selectedMenu === item)}
-    onClick={() => setSelectedMenu(item)}
-  >
-    {item}
-  </button>
-))}
+        {['Dashboard', 'Medicine', 'Purchase', 'Inventory', 'Supplier', 'Sales'].map((item) => (
+          <button
+            key={item}
+            style={menuItemStyle(selectedMenu === item)}
+            onClick={() => setSelectedMenu(item)}
+          >
+            {item}
+          </button>
+        ))}
       </div>
 
       {/* Main Content */}

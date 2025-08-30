@@ -8,10 +8,7 @@ const PharmacySupplier = ({ selectedMenu, setSelectedMenu }) => {
       contact: '+880 1712-345678',
       address: '123 Medical Street, Dhanmondi, Dhaka-1205',
       email: 'info@medsupply.com',
-      totalPurchases: 15,
-      totalAmount: 125000.50,
-      lastPurchaseDate: '2024-08-20',
-      status: 'Active'
+      active: 1
     },
     {
       id: 2,
@@ -19,10 +16,7 @@ const PharmacySupplier = ({ selectedMenu, setSelectedMenu }) => {
       contact: '+880 1798-765432',
       address: '456 Healthcare Ave, Gulshan-2, Dhaka-1212',
       email: 'sales@pharmacorp.bd',
-      totalPurchases: 22,
-      totalAmount: 198750.00,
-      lastPurchaseDate: '2024-08-18',
-      status: 'Active'
+      active: 1
     },
     {
       id: 3,
@@ -30,10 +24,7 @@ const PharmacySupplier = ({ selectedMenu, setSelectedMenu }) => {
       contact: '+880 1634-987654',
       address: '789 Wellness Road, Banani, Dhaka-1213',
       email: 'contact@healthplus.com',
-      totalPurchases: 8,
-      totalAmount: 67200.25,
-      lastPurchaseDate: '2024-08-15',
-      status: 'Active'
+      active: 1
     },
     {
       id: 4,
@@ -41,10 +32,7 @@ const PharmacySupplier = ({ selectedMenu, setSelectedMenu }) => {
       contact: '+880 1587-321098',
       address: '321 Pharma Complex, Mohakhali, Dhaka-1212',
       email: 'orders@medicore.bd',
-      totalPurchases: 18,
-      totalAmount: 142300.75,
-      lastPurchaseDate: '2024-08-22',
-      status: 'Active'
+      active: 1
     },
     {
       id: 5,
@@ -52,10 +40,7 @@ const PharmacySupplier = ({ selectedMenu, setSelectedMenu }) => {
       contact: '+880 1743-654321',
       address: '654 Diabetes Lane, Uttara, Dhaka-1230',
       email: 'info@diabetcare.com',
-      totalPurchases: 12,
-      totalAmount: 89600.00,
-      lastPurchaseDate: '2024-07-30',
-      status: 'Inactive'
+      active: 0
     },
     {
       id: 6,
@@ -63,10 +48,7 @@ const PharmacySupplier = ({ selectedMenu, setSelectedMenu }) => {
       contact: '+880 1692-147258',
       address: '987 Heart Center, Mirpur-10, Dhaka-1216',
       email: 'supplies@cardiomed.bd',
-      totalPurchases: 14,
-      totalAmount: 156750.50,
-      lastPurchaseDate: '2024-08-19',
-      status: 'Active'
+      active: 1
     },
     {
       id: 7,
@@ -74,10 +56,7 @@ const PharmacySupplier = ({ selectedMenu, setSelectedMenu }) => {
       contact: '+880 1785-369147',
       address: '147 Cardiac Street, Wari, Dhaka-1203',
       email: 'sales@heartcare.com',
-      totalPurchases: 9,
-      totalAmount: 78900.25,
-      lastPurchaseDate: '2024-08-16',
-      status: 'Active'
+      active: 1
     },
     {
       id: 8,
@@ -85,39 +64,13 @@ const PharmacySupplier = ({ selectedMenu, setSelectedMenu }) => {
       contact: '+880 1658-741963',
       address: '258 Hypertension Road, Tejgaon, Dhaka-1215',
       email: 'info@pressurecare.bd',
-      totalPurchases: 11,
-      totalAmount: 94500.75,
-      lastPurchaseDate: '2024-08-14',
-      status: 'Active'
-    },
-    {
-      id: 9,
-      name: 'RespiroCare Ltd.',
-      contact: '+880 1729-852741',
-      address: '369 Respiratory Plaza, Panthapath, Dhaka-1205',
-      email: 'orders@respirocare.com',
-      totalPurchases: 16,
-      totalAmount: 134200.00,
-      lastPurchaseDate: '2024-08-21',
-      status: 'Active'
-    },
-    {
-      id: 10,
-      name: 'AllergyFree Inc.',
-      contact: '+880 1674-258963',
-      address: '741 Allergy Center, Farmgate, Dhaka-1215',
-      email: 'contact@allergyfree.bd',
-      totalPurchases: 7,
-      totalAmount: 52300.50,
-      lastPurchaseDate: '2024-08-12',
-      status: 'Active'
+      active: 1
     }
   ]);
 
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingSupplier, setEditingSupplier] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
 
   // Styles
   const containerStyle = {
@@ -222,15 +175,6 @@ const PharmacySupplier = ({ selectedMenu, setSelectedMenu }) => {
     outline: 'none'
   };
 
-  const selectStyle = {
-    padding: '8px 12px',
-    border: '1px solid #D1D5DB',
-    borderRadius: '4px',
-    fontSize: '13px',
-    backgroundColor: 'white',
-    minWidth: '120px'
-  };
-
   const tableContainerStyle = {
     backgroundColor: 'white',
     borderRadius: '6px',
@@ -268,23 +212,6 @@ const PharmacySupplier = ({ selectedMenu, setSelectedMenu }) => {
     verticalAlign: 'top',
     overflow: 'hidden',
     textOverflow: 'ellipsis'
-  };
-
-  const statusBadgeStyle = (status) => {
-    const colors = {
-      'Active': { bg: '#0B2D14', color: 'white' },
-      'Inactive': { bg: '#6B7280', color: 'white' }
-    };
-    const style = colors[status] || { bg: '#6B7280', color: 'white' };
-    
-    return {
-      backgroundColor: style.bg,
-      color: style.color,
-      padding: '2px 8px',
-      borderRadius: '12px',
-      fontSize: '10px',
-      fontWeight: '500'
-    };
   };
 
   const statusToggleStyle = {
@@ -396,31 +323,37 @@ const PharmacySupplier = ({ selectedMenu, setSelectedMenu }) => {
     display: 'block'
   };
 
-  const formatCurrency = (amount) => {
-    return `৳${amount.toLocaleString('en-BD', { minimumFractionDigits: 2 })}`;
-  };
-
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-GB', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
-    });
+  const checkUniqueSupplier = (supplier, suppliers, excludeId = null) => {
+    return !suppliers.some(s => 
+      s.id !== excludeId &&
+      (s.name.toLowerCase() === supplier.name.toLowerCase() ||
+       s.email.toLowerCase() === supplier.email.toLowerCase() ||
+       (s.name.toLowerCase() === supplier.name.toLowerCase() && 
+        s.contact === supplier.contact && 
+        s.address.toLowerCase() === supplier.address.toLowerCase()))
+    );
   };
 
   const handleAddSupplier = (newSupplier) => {
+    if (!checkUniqueSupplier(newSupplier, suppliers)) {
+      alert('A supplier with the same name, email, or combination of name+contact+address already exists.');
+      return;
+    }
+
     setSuppliers([...suppliers, { 
       ...newSupplier, 
       id: Date.now(),
-      totalPurchases: 0,
-      totalAmount: 0,
-      lastPurchaseDate: null,
-      status: 'Active'
+      active: 1
     }]);
     setShowAddForm(false);
   };
 
   const handleEditSupplier = (updatedSupplier) => {
+    if (!checkUniqueSupplier(updatedSupplier, suppliers, updatedSupplier.id)) {
+      alert('A supplier with the same name, email, or combination of name+contact+address already exists.');
+      return;
+    }
+
     setSuppliers(suppliers.map(supplier => 
       supplier.id === updatedSupplier.id ? updatedSupplier : supplier
     ));
@@ -428,13 +361,7 @@ const PharmacySupplier = ({ selectedMenu, setSelectedMenu }) => {
   };
 
   const handleDeleteSupplier = (id) => {
-    const supplier = suppliers.find(s => s.id === id);
-    if (supplier && supplier.totalPurchases > 0) {
-      alert('Cannot delete supplier with existing purchase history. Please contact administrator.');
-      return;
-    }
-    
-    if (window.confirm('Are you sure you want to delete this supplier?')) {
+    if (window.confirm('Are you sure you want to delete this supplier? This will affect purchase records.')) {
       setSuppliers(suppliers.filter(supplier => supplier.id !== id));
     }
   };
@@ -442,7 +369,7 @@ const PharmacySupplier = ({ selectedMenu, setSelectedMenu }) => {
   const handleToggleSupplierStatus = (id) => {
     setSuppliers(suppliers.map(supplier => 
       supplier.id === id 
-        ? { ...supplier, status: supplier.status === 'Active' ? 'Inactive' : 'Active' }
+        ? { ...supplier, active: supplier.active === 1 ? 0 : 1 }
         : supplier
     ));
   };
@@ -456,10 +383,18 @@ const PharmacySupplier = ({ selectedMenu, setSelectedMenu }) => {
     });
 
     const handleSubmit = () => {
-      if (!formData.name || !formData.contact || !formData.email) {
-        alert('Please fill in all required fields (Name, Contact, Email)');
+      if (!formData.name || !formData.contact || !formData.email || !formData.address) {
+        alert('Please fill in all required fields');
         return;
       }
+      
+      // Email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.email)) {
+        alert('Please enter a valid email address');
+        return;
+      }
+
       onSave(formData);
     };
 
@@ -500,7 +435,7 @@ const PharmacySupplier = ({ selectedMenu, setSelectedMenu }) => {
               />
             </div>
             <div>
-              <label style={labelStyle}>Address</label>
+              <label style={labelStyle}>Address *</label>
               <textarea
                 style={textareaStyle}
                 value={formData.address}
@@ -550,9 +485,7 @@ const PharmacySupplier = ({ selectedMenu, setSelectedMenu }) => {
                          supplier.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          supplier.address.toLowerCase().includes(searchTerm.toLowerCase());
     
-    const matchesStatus = !statusFilter || supplier.status === statusFilter;
-    
-    return matchesSearch && matchesStatus;
+    return matchesSearch;
   });
 
   return (
@@ -561,7 +494,7 @@ const PharmacySupplier = ({ selectedMenu, setSelectedMenu }) => {
       <div style={sidebarStyle}>
         <div style={logoStyle}>PharmaSync</div>
         
-        {['Dashboard', 'Inventory', 'Supplier', 'Sales', 'Report'].map((item) => (
+        {['Dashboard', 'Medicine', 'Purchase', 'Inventory', 'Supplier', 'Sales'].map((item) => (
           <button
             key={item}
             style={menuItemStyle(selectedMenu === item)}
@@ -594,15 +527,6 @@ const PharmacySupplier = ({ selectedMenu, setSelectedMenu }) => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <select 
-              style={selectStyle}
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-            >
-              <option value="">All Status</option>
-              <option value="Active">Active</option>
-              <option value="Inactive">Inactive</option>
-            </select>
           </div>
         </div>
 
@@ -611,13 +535,10 @@ const PharmacySupplier = ({ selectedMenu, setSelectedMenu }) => {
           <table style={tableStyle}>
             <thead>
               <tr>
-                <th style={{...tableHeaderStyle, width: '20%'}}>Supplier Details</th>
-                <th style={{...tableHeaderStyle, width: '15%'}}>Contact Info</th>
-                <th style={{...tableHeaderStyle, width: '25%'}}>Address</th>
-                <th style={{...tableHeaderStyle, width: '10%'}}>Orders</th>
-                <th style={{...tableHeaderStyle, width: '12%'}}>Total Amount</th>
-                <th style={{...tableHeaderStyle, width: '10%'}}>Last Purchase</th>
-                <th style={{...tableHeaderStyle, width: '8%'}}>Status</th>
+                <th style={{...tableHeaderStyle, width: '25%'}}>Supplier Details</th>
+                <th style={{...tableHeaderStyle, width: '18%'}}>Contact Info</th>
+                <th style={{...tableHeaderStyle, width: '35%'}}>Address</th>
+                <th style={{...tableHeaderStyle, width: '12%'}}>Status</th>
                 <th style={{...tableHeaderStyle, width: '10%'}}>Actions</th>
               </tr>
             </thead>
@@ -629,31 +550,21 @@ const PharmacySupplier = ({ selectedMenu, setSelectedMenu }) => {
                     <div style={{fontSize: '10px', color: '#6B7280'}}>{supplier.email}</div>
                   </td>
                   <td style={tableCellStyle}>
-                    <div style={{marginBottom: '2px'}}>{supplier.contact}</div>
+                    <div>{supplier.contact}</div>
                   </td>
                   <td style={tableCellStyle}>
                     <div style={{fontSize: '10px', lineHeight: '1.3'}}>{supplier.address}</div>
-                  </td>
-                  <td style={tableCellStyle}>
-                    <div style={{fontWeight: '600'}}>{supplier.totalPurchases}</div>
-                    <div style={{fontSize: '10px', color: '#6B7280'}}>orders</div>
-                  </td>
-                  <td style={tableCellStyle}>
-                    <div style={{fontWeight: '600', color: '#0B2D14'}}>{formatCurrency(supplier.totalAmount)}</div>
-                  </td>
-                  <td style={tableCellStyle}>
-                    {supplier.lastPurchaseDate ? formatDate(supplier.lastPurchaseDate) : 'Never'}
                   </td>
                   <td style={tableCellStyle}>
                     <label style={statusToggleStyle}>
                       <input
                         style={statusToggleInputStyle}
                         type="checkbox"
-                        checked={supplier.status === 'Active'}
+                        checked={supplier.active === 1}
                         onChange={() => handleToggleSupplierStatus(supplier.id)}
                       />
-                      <span style={statusToggleSliderStyle(supplier.status === 'Active')}>
-                        <span style={statusToggleSliderBeforeStyle(supplier.status === 'Active')}></span>
+                      <span style={statusToggleSliderStyle(supplier.active === 1)}>
+                        <span style={statusToggleSliderBeforeStyle(supplier.active === 1)}></span>
                       </span>
                     </label>
                   </td>
@@ -671,13 +582,6 @@ const PharmacySupplier = ({ selectedMenu, setSelectedMenu }) => {
                       title="Delete"
                     >
                       🗑️
-                    </button>
-                    <button 
-                      style={{...actionButtonStyle, color: '#0B2D14'}}
-                      onClick={() => console.log('View details for:', supplier.name)}
-                      title="View Purchase History"
-                    >
-                      📊
                     </button>
                   </td>
                 </tr>

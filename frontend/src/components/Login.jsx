@@ -3,27 +3,26 @@ import React, { useState } from 'react';
 const PharmacyLogin = ({ onNavigateToDashboard }) => {
   const [formData, setFormData] = useState({
     username: '',
-    password: '',
-    rememberMe: false
+    password: ''
   });
 
   const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: value
     }));
   };
 
-const handleSubmit = () => {
-  console.log('Login attempt:', formData);
-  // Simple validation
-  if (formData.username && formData.password) {
-    onNavigateToDashboard(); // Redirect to dashboard
-  } else {
-    alert('Please enter username and password');
-  }
-};
+  const handleSubmit = () => {
+    console.log('Login attempt:', formData);
+    // Simple validation
+    if (formData.username && formData.password) {
+      onNavigateToDashboard(); // Redirect to dashboard
+    } else {
+      alert('Please enter username and password');
+    }
+  };
 
   const containerStyle = {
     height: '100vh',
@@ -106,24 +105,6 @@ const handleSubmit = () => {
     boxSizing: 'border-box'
   };
 
-  const checkboxContainerStyle = {
-    display: 'flex',
-    alignItems: 'center',
-    marginBottom: '24px'
-  };
-
-  const checkboxStyle = {
-    height: '16px',
-    width: '16px',
-    accentColor: '#0B2D14',
-    marginRight: '8px'
-  };
-
-  const checkboxLabelStyle = {
-    color: '#595252',
-    fontSize: '16px'
-  };
-
   const loginButtonStyle = {
     width: '100%',
     backgroundColor: '#0B2D14',
@@ -134,18 +115,6 @@ const handleSubmit = () => {
     fontWeight: '600',
     border: 'none',
     cursor: 'pointer',
-    transition: 'opacity 0.3s ease',
-    marginBottom: '24px'
-  };
-
-  const forgotPasswordStyle = {
-    textAlign: 'center'
-  };
-
-  const forgotPasswordLinkStyle = {
-    color: '#0B2D14',
-    fontSize: '14px',
-    textDecoration: 'none',
     transition: 'opacity 0.3s ease'
   };
 
@@ -162,7 +131,7 @@ const handleSubmit = () => {
           </p>
         </div>
 
-        {/* Pharmacy Illustration - No Background Container */}
+        {/* Pharmacy Illustration */}
         <img 
           src="/landing.png" 
           alt="Pharmacy illustration" 
@@ -176,11 +145,11 @@ const handleSubmit = () => {
           <h2 style={formTitleStyle}>Login Your Account</h2>
 
           <div>
-            {/* Username/Email Field */}
+            {/* Username Field */}
             <input
               type="text"
               name="username"
-              placeholder="Username or Email Address"
+              placeholder="Username"
               value={formData.username}
               onChange={handleInputChange}
               style={inputStyle}
@@ -200,21 +169,6 @@ const handleSubmit = () => {
               onBlur={(e) => e.target.style.borderColor = '#F5F5F5'}
             />
 
-            {/* Remember Me Checkbox */}
-            <div style={checkboxContainerStyle}>
-              <input
-                type="checkbox"
-                name="rememberMe"
-                id="rememberMe"
-                checked={formData.rememberMe}
-                onChange={handleInputChange}
-                style={checkboxStyle}
-              />
-              <label htmlFor="rememberMe" style={checkboxLabelStyle}>
-                Remember Me
-              </label>
-            </div>
-
             {/* Login Button */}
             <button
               onClick={handleSubmit}
@@ -224,18 +178,6 @@ const handleSubmit = () => {
             >
               LOGIN
             </button>
-          </div>
-
-          {/* Additional Links */}
-          <div style={forgotPasswordStyle}>
-            <a 
-              href="#" 
-              style={forgotPasswordLinkStyle}
-              onMouseOver={(e) => e.target.style.opacity = '0.8'}
-              onMouseOut={(e) => e.target.style.opacity = '1'}
-            >
-              Forgot your password?
-            </a>
           </div>
         </div>
       </div>
