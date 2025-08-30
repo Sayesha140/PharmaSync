@@ -89,3 +89,47 @@ def delete_inventory():
     finally:
         cursor.close()
         conn.close()
+
+
+
+
+
+# ------------------------- VIEW ALL INVENTORIES -------------------------
+
+
+@inventory_bp.route("/all-inventories", methods=["GET"])
+@admin_required
+def all_inventories():
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            SELECT i.inventory_id,
+                   m.name AS medicine_name,
+                   m.generic_name,
+                   m.category,
+                   m.dosage_form,
+                   i.batch_no,
+                   i.expiry_date,
+                   i.quantity,
+                   i.active,
+                   i.last_updated
+            FROM inventory i
+            JOIN medicine m ON i.medicine_id = m.medicine_id
+            ORDER BY m.name
+        """)
+
+        result = [
+            dict(zip([col[0] for col in cursor.description], row))
+            for row in cursor.fetchall()
+        ]
+
+        return jsonify(result), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+    finally:
+        cursor.close()
+        conn.close()
