@@ -71,6 +71,7 @@ def sale_details(sale_id):
                m.generic_name,
                m.category,
                m.dosage_form,
+               i.batch_no,          -- Added batch number
                sd.quantity,
                sd.unit_price,
                sd.subtotal
@@ -84,6 +85,7 @@ def sale_details(sale_id):
     cur.close()
     conn.close()
     return jsonify(result)
+
 
 
 # ------------------------- DELETE SALE -------------------------
