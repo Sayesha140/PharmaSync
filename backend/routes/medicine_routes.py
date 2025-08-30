@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from routes.auth_routes import admin_required
 from db import get_connection
 import oracledb
 
@@ -9,6 +10,7 @@ medicine_bp = Blueprint('medicine_bp', __name__)
 # ------------------------- ADD MEDICINE -------------------------
 
 @medicine_bp.route('/add-medicine', methods=['POST'])
+@admin_required
 def add_medicine():
     data = request.json or {}
 
@@ -40,6 +42,7 @@ def add_medicine():
 # ------------------------- DELETE MEDICINE -------------------------
 
 @medicine_bp.route('/delete-medicine', methods=['POST'])
+@admin_required
 def delete_medicine():
     data = request.json or {}
     medicine_id = data.get('medicine_id')
@@ -63,6 +66,7 @@ def delete_medicine():
 # ------------------------- UPDATE MEDICINE -------------------------
 
 @medicine_bp.route('/update-medicine', methods=['POST'])
+@admin_required
 def update_medicine():
     data = request.json or {}
     medicine_id = data.get('medicine_id')
@@ -94,6 +98,7 @@ def update_medicine():
 # ------------------------- VIEW ACTIVE MEDICINES -------------------------
 
 @medicine_bp.route('/view-medicines', methods=['GET'])
+@admin_required
 def view_medicines():
     try:
         conn = get_connection()

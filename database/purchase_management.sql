@@ -78,6 +78,47 @@ END;
 
 
 
+----------------------------------------------------Delete a Purchase--------------------------------------------------------
+
+
+
+
+CREATE OR REPLACE PROCEDURE DELETE_PURCHASE(
+    p_purchase_id IN PURCHASE.PURCHASE_ID%TYPE
+) IS
+    v_count NUMBER;
+BEGIN
+    -- Check if purchase exists
+    SELECT COUNT(*) INTO v_count
+    FROM PURCHASE
+    WHERE PURCHASE_ID = p_purchase_id;
+
+    IF v_count = 0 THEN
+        RAISE_APPLICATION_ERROR(-20001, 'Purchase not found.');
+    END IF;
+
+    -- Delete purchase details 
+    DELETE FROM PURCHASE_DETAILS
+    WHERE PURCHASE_ID = p_purchase_id;
+
+    -- Delete purchase
+    DELETE FROM PURCHASE
+    WHERE PURCHASE_ID = p_purchase_id;
+
+    COMMIT;
+EXCEPTION
+    WHEN OTHERS THEN
+        ROLLBACK;
+        RAISE;
+END;
+/
+
+
+
+
+
+
+
 -----------------------------------------------------Trigger After Purchse----------------------------------------------------
 
 

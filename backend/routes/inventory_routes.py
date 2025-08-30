@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from routes.auth_routes import admin_required
 from db import get_connection
 import oracledb
 
@@ -9,6 +10,7 @@ inventory_bp = Blueprint('inventory_bp', __name__)
 # ------------------------- ADD INVENTORY -------------------------
 
 @inventory_bp.route('/add-inventory', methods=['POST'])
+@admin_required
 def add_inventory():
     data = request.json or {}
 
@@ -38,6 +40,7 @@ def add_inventory():
 # ------------------------- UPDATE INVENTORY -------------------------
 
 @inventory_bp.route('/update-inventory', methods=['POST'])
+@admin_required
 def update_inventory():
     data = request.json or {}
     inventory_id = data.get('inventory_id')
@@ -67,6 +70,7 @@ def update_inventory():
 # ------------------------- DELETE INVENTORY -------------------------
 
 @inventory_bp.route('/delete-inventory', methods=['POST'])
+@admin_required
 def delete_inventory():
     data = request.json or {}
     inventory_id = data.get('inventory_id')
