@@ -7,17 +7,19 @@ const PharmaSyncLanding = ({ onNavigateToLogin }) => {
     margin: 0,
     fontFamily: 'Arial, sans-serif',
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
+    overflow: 'hidden'
   };
 
   const navStyle = {
     width: '100%',
-    padding: '12px 32px',
-    backgroundColor: '#C0DFC9'
+    padding: '16px 32px',
+    backgroundColor: '#C0DFC9',
+    flexShrink: 0
   };
 
   const navContainerStyle = {
-    maxWidth: '1200px',
+    maxWidth: '1400px',
     margin: '0 auto',
     display: 'flex',
     justifyContent: 'flex-end',
@@ -40,29 +42,27 @@ const PharmaSyncLanding = ({ onNavigateToLogin }) => {
     cursor: 'pointer'
   };
 
-  const heroStyle = {
+  const contentStyle = {
+    flex: 1,
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    maxWidth: '1200px',
+    maxWidth: '1400px',
     margin: '0 auto',
-    padding: '20px 32px',
-    flex: 1,
     width: '100%',
-    boxSizing: 'border-box'
+    padding: '0 40px'
   };
 
   const leftContentStyle = {
-    width: '45%',
-    paddingRight: '40px'
+    width: '40%',
+    paddingLeft: '40px'
   };
 
   const logoContainerStyle = {
     display: 'inline-block',
-    padding: '16px 48px',
+    padding: '16px 50px',
     borderRadius: '50px',
     backgroundColor: '#C0DFC9',
-    marginBottom: '24px'
+    marginBottom: '30px'
   };
 
   const titleStyle = {
@@ -78,7 +78,7 @@ const PharmaSyncLanding = ({ onNavigateToLogin }) => {
     color: '#374151',
     fontSize: '16px',
     lineHeight: '1.5',
-    marginBottom: '24px',
+    marginBottom: '30px',
     maxWidth: '400px'
   };
 
@@ -94,56 +94,36 @@ const PharmaSyncLanding = ({ onNavigateToLogin }) => {
   };
 
   const rightContentStyle = {
-    width: '55%',
+    width: '60%',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center'
-  };
-
-  const imageContainerStyle = {
-    position: 'relative',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center'
-  };
-
-  const backgroundCircleStyle = {
-    position: 'absolute',
-    width: '300px',
-    height: '300px',
-    backgroundColor: '#C0DFC9',
-    borderRadius: '50%',
-    opacity: 0.3,
-    top: '-60px',
-    left: '-60px',
-    zIndex: 0
-  };
-
-  const imageBoxStyle = {
-    backgroundColor: 'white',
-    borderRadius: '8px',
-    padding: '24px',
-    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-    width: '280px',
-    position: 'relative',
-    zIndex: 1
   };
 
   const imageStyle = {
-    width: '100%',
-    height: '180px',
+    width: '500px',
+    height: 'auto',
     objectFit: 'contain',
-    borderRadius: '4px'
+    opacity: 0.9,
+    filter: 'brightness(0.95)'
+  };
+
+  const separatorStyle = {
+    width: '100%',
+    borderTop: '1px solid white',
+    opacity: 0.5,
+    flexShrink: 0
   };
 
   const footerStyle = {
-    padding: '16px 0',
-    textAlign: 'center'
+    padding: '12px 0',
+    textAlign: 'center',
+    flexShrink: 0
   };
 
   const footerTextStyle = {
     color: '#6B7280',
-    fontSize: '14px',
+    fontSize: '12px',
     margin: 0
   };
 
@@ -161,8 +141,8 @@ const PharmaSyncLanding = ({ onNavigateToLogin }) => {
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <div style={heroStyle}>
+      {/* Main Content */}
+      <div style={contentStyle}>
         {/* Left Content */}
         <div style={leftContentStyle}>
           <div style={logoContainerStyle}>
@@ -178,20 +158,18 @@ const PharmaSyncLanding = ({ onNavigateToLogin }) => {
           </button>
         </div>
 
-        {/* Right Content - Pharmacy Illustration */}
+        {/* Right Content - Pharmacy Image */}
         <div style={rightContentStyle}>
-          <div style={imageContainerStyle}>
-            <div style={backgroundCircleStyle}></div>
-            <div style={imageBoxStyle}>
-              <img 
-                src="/pharmacist-bro.png" 
-                alt="Pharmacy illustration" 
-                style={imageStyle}
-              />
-            </div>
-          </div>
+          <img 
+            src="/landing.png"
+            alt="Pharmacy illustration" 
+            style={imageStyle}
+          />
         </div>
       </div>
+
+      {/* White line separator */}
+      <div style={separatorStyle}></div>
 
       {/* Footer */}
       <footer style={footerStyle}>
